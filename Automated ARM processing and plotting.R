@@ -149,7 +149,7 @@ plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.1),col=factor(long2$Group
 #add points and line
 #change y variable to change the plotted line, keep x (pdat$Angle)
 #default y values are column numbers, column names would also work, but is not automated
-#When plotting several measurements (so more than one line) use pdat$measurementname for x
+#When plotting several measurements (so more than one line) use pdat$measurementname for y
 lines(pdat$Angle, pdat[,2], pch = 19, col = "blue", type = "b", lty = 1)
 lines(pdat$Angle, pdat[,3], pch = 19, col = "red", type = "b", lty = 1)
 lines(pdat$Angle, pdat[,4], pch = 19, col = "green", type = "b", lty = 1)
