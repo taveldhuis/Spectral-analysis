@@ -124,13 +124,13 @@ Cosobj$Angle<- angle
 #Plotting individual measurements. Use next section for plotting more than one
 #####
 #First we create an empty space to plot in
-plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.1),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 800 nm)", main = paste("Swainsona horizontal","800 nm Illumangle",Illum,sep=" "),bty= "l",las=1,pch=19)
+plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.1),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 800 nm)", main = paste(Species,"800 nm Illumangle",Illum,sep=" "),bty= "l",las=1,pch=19)
 
 
 #add points and line
 #change y variable to change the plotted line, keep x (pdat$Angle)
 #When plotting several measurements (so more than one line) use pdat$measurementname for x
-lines(pdat$Angle, long2$reflectance, pch = 19, col = "blue", type = "b", lty = 1)
+lines(pdat$Angle, long2$reflectance, pch = 19, col = "blue", type = "b", lty = 1,lwd=2)
 #we add the cosine line
 lines(Cosobj$Angle, Cosobj$cosine, pch = 19, col = "black", type = "b", lty = 1)
 
@@ -150,13 +150,13 @@ plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.1),col=factor(long2$Group
 #change y variable to change the plotted line, keep x (pdat$Angle)
 #default y values are column numbers, column names would also work, but is not automated
 #When plotting several measurements (so more than one line) use pdat$measurementname for y
-lines(pdat$Angle, pdat[,2], pch = 19, col = "blue", type = "b", lty = 1)
-lines(pdat$Angle, pdat[,3], pch = 19, col = "red", type = "b", lty = 1)
-lines(pdat$Angle, pdat[,4], pch = 19, col = "green", type = "b", lty = 1)
-lines(pdat$Angle, pdat[,5], pch = 19, col = "black", type = "b", lty = 1)
-lines(pdat$Angle, pdat[,6], pch = 19, col = "purple", type = "b", lty = 1)
-lines(pdat$Angle, pdat[,7], pch = 19, col = "firebrick", type = "b", lty = 1)
-lines(pdat$Angle, pdat[,8], pch = 19, col = "yellow", type = "b", lty = 1)
+lines(pdat$Angle, pdat[,2], pch = 19, col = "blue", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,3], pch = 19, col = "red", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,4], pch = 19, col = "green", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,5], pch = 19, col = "black", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,6], pch = 19, col = "purple", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,7], pch = 19, col = "firebrick", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,8], pch = 19, col = "yellow", type = "b", lty = 1,lwd=2)
 
 #we add the cosine line
 lines(Cosobj$Angle, Cosobj$cosine, pch = 19, col = "black", type = "b", lty = 1)
