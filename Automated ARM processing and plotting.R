@@ -143,7 +143,7 @@ axis(1, at = seq(-70, 100, by = 10), las=1)
 
 #This section is for plotting several measurements at the same time
 #First we create an empty space to plot in
-plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.1),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 800 nm)", main = paste("Swainsona horizontal","800 nm Illumangle",Illum,sep=" "),bty= "l",las=1,pch=19)
+plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.1),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 800 nm)", main = paste(Species,"800 nm Illumangle",Illum,sep=" "),bty= "l",las=1,pch=19)
 
 
 #add points and line
