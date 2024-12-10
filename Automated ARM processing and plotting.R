@@ -10,10 +10,10 @@ library(data.table)
 
 
 #set your working directory
-setwd("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Casper 2024/ARM")
+setwd("C:/Users/P309883/Downloads/today/20241111")
 
 #here we set the variables determined by the ARM measurement protocol. The variables should match those specified in the Matlab script
-anglim<- 70
+anglim<- 60
 dstep<-10
 Species<- "Various"
 wl<- c(300:1000)
@@ -111,12 +111,15 @@ long2$M_angle<- NULL
 
 pdat<- reshape(long2, idvar = c("Angle"), timevar = "Group", direction = "wide")
 
+#extract the maximum value for later use
+pmax<- max(pdat[,c(2:ncol(pdat))])
+
 #here we calculate and edit a cosine function to compare to measurements
 angle<- c(-anglim:anglim)
 Rangle<- angle*(pi/180)
 
 #edit the value before cos(Rangle) to change line height
-cosine<- 0.8*cos(Rangle) 
+cosine<- pmax*cos(Rangle) 
 Cosobj<-as.data.frame(cosine)
 Cosobj$Angle<- angle
 
@@ -137,7 +140,7 @@ lines(Cosobj$Angle, Cosobj$cosine, pch = 19, col = "black", type = "b", lty = 1)
 #fix axis
 axis(1, at = seq(-70, 100, by = 10), las=1)
 
-#optional legend
+#optional legend settings
 #legend("topright", legend=c("Dark 1","Dark 2","Light 1","Light 2"), col=c("blue", "purple","green"), lty=1, cex=0.8, box.lty=0,)
 ######
 
@@ -166,3 +169,8 @@ axis(1, at = seq(-70, 100, by = 10), las=1)
 
 #optional legend
 legend("topright", legend=c("Dark 1","Dark 2","Light 1","Light 2"), col=c("blue", "purple","green"), lty=1, cex=0.8, box.lty=0,)
+
+
+
+
+
