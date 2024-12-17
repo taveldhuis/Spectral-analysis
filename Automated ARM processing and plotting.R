@@ -9,7 +9,7 @@ library(reshape2)
 library(data.table)
 
 
-#set your working directory
+#set your working directory. Make sure there are ONLY .dat files from the ARM in the directory
 setwd("C:/Users/P309883/Downloads/today/20241111")
 
 #here we set the variables determined by the ARM measurement protocol. The variables should match those specified in the Matlab script
