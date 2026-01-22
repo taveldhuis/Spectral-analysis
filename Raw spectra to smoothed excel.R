@@ -9,10 +9,12 @@ rm(list=ls());gc()
 library(pavo)
 library(tidyverse)
 
+#Lines to modify (lines 13-22)
 #Set directory to where you keep your spectra files
-setwd("C:/Users/P309883/Downloads/Oenothera")
-
-#Variables to modify
+#KEEP IN MIND: set the directory to the folder above your data folder, otherwise it wont read the right one. We specify the folder in the command after this
+setwd("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Double deception study")
+#Set the folder in the directory you want to read
+folder<- "Spectra"
 #smoothing factor (0.2 usually works best)
 smoothing<- 0.2
 #Set upper and lower wl limits, 300-800 for probe, 350-700 for MSP
@@ -20,13 +22,13 @@ wl_lower<- 300
 wl_upper<- 800
 
 #Load your spectra. They will not have the correct names yet (we will fix this later). Modify lim to change wavelength ranges. modify where= ("XXXX") to the desired folder
-rspecdata <- getspec(where=("Oenothera"), ext = "TXT",decimal=",",lim=c(300,1000))
+rspecdata <- getspec(where=(folder), ext = "TXT",decimal=",",lim=c(300,1000), subdir= TRUE)
 wl<- c(300:1000)
 
 #First we remove useless characters from the start of the file names. The number represents the amount of characters we want to remove. This number (23 in my case) may change based on how you label your measurements. 
 names(rspecdata)<- substring(names(rspecdata),12)
 
-#Select the measurement type you want (in this case the species "Grandiflora"). We also add the wavelength again afterwards because the select function removes it
+#Line 32 can be modified to specify a measurement type or species. We also add the wavelength again afterwards because the select function removes it
 specdat<- rspecdata 
 specdat$wl<- wl
 specdat<- specdat[,-1]
@@ -50,16 +52,17 @@ pdat2<- pdat/100
 pdat2$wl<- c(wl_lower:wl_upper)
 pdat2<- as.rspec(pdat2)
 plot(pdat2, ylim=c(0,1))
-
+pdat<-pdat2
 #If there are no issues, let's write a csv file with our transformed data
-write.csv(pdat,"Smoothed data.csv")
+write.csv(pdat,"Cretan floral data 2024-2025.csv")
 
 
-
+pdat<- pdat %>% select(contains("alive"))
+pdat$wl<- c(300:800)
 #We do a little plotting. 
 #Change plot labels based on measurement type and such
-plot(pdat$wl, y=pdat$R_creticus_MSP_refl_gloss_1_0609021U1, type = "n", xlim = c(wl_lower, wl_upper), ylim = c(0, 1), 
-     xlab = "Wavelength (nm)", ylab = "Measured unit", main = "MSP reflectance", las=1, bty="l")
+plot(pdat$wl, y=pdat$SP_refl_alive_white_angled_1_0609021U1, type = "n", xlim = c(wl_lower, wl_upper), ylim = c(0, 1), 
+     xlab = "Wavelength (nm)", ylab = "Reflectance", main = "Probe reflectance", las=1, bty="l")
 
 #Now we add the spectra we want to see. you need to edit the legend based on the number of lines in the plot
 lines(pdat$wl, pdat[,2], type = "l", col = "red", lwd=2)
