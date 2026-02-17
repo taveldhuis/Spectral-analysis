@@ -10,3 +10,7 @@ Code and data for analysis of spectral (TRM8, ABS8) data
 #Raw spectra to smoothed excel
 #Author- Tom Veldhuis (t.a.veldhuis@rug.nl)
 #An R script that processes .TXT files created by Avasoft8 measurements into smoothed and corrected .csv files
+
+#Colourspace modelling and plotting (triangle)
+#Author- Tom Veldhuis (t.a.veldhuis@rug.nl)
+#An R script that processes spectral data (preferably from excel) into a triagular colourspace model
