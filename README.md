@@ -17,4 +17,4 @@ Code and data for analysis of spectral (TRM8, ABS8) data
 
 #ARM Heatmap script
 #Author- Tom Veldhuis/Casper van der Kooi (t.a.veldhuis@rug.nl)
-#An R script that plots ARM data into a heatmap to show reflectance at all angle and illumination combinations. Advanced version of "Atomated ARM processing and plotting"
+#An R script that plots ARM data into a heatmap to show reflectance at all angle and illumination combinations. Advanced version of "Automated ARM processing and plotting"
