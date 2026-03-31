@@ -10,18 +10,18 @@ library(data.table)
 
 
 #set your working directory. Make sure there are ONLY .dat files from the ARM in the directory
-setwd("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Ophyrs 2025/ARM/20250224")
+setwd("C:/Users/P309883/OneDrive - University of Groningen/Downloads/Data-20260325T132816Z-3-001/Data/20250223")
 
 #here we set the variables determined by the ARM measurement protocol. The variables should match those specified in the Matlab script
-anglim<- 60
+anglim<- 70
 dstep<-10
 #Set the name you want to appear in your plots
-Species<- "O_eos"
-wl<- c(300:1000)
+Species<- "Various"
+wl<- c(200:1100)
 #Set illumination angle for later plotting
 Illum="0"
 #set the wavelength at which you want to plot your angles
-plotwl<- 800
+plotwl<- 500
 
 #Spectra loading and mallnames#Spectra loading and manipulation. Collapse this part to skip to the next section
 #####
@@ -31,6 +31,9 @@ angle_list<- c("wl",paste("M_Angle",seq(-anglim,anglim,dstep), sep="_"))
 
 # import our spectra and make a list of their file names (illumangle)
 files = list.files(pattern="*.dat", recursive= TRUE, include.dirs = FALSE)
+#filter out any files at wider angles than wanted
+files <- files[!grepl("60|70", files)]
+
 fileslength<- length(files)
 
 #Here we edit the files list in such a way that we remove the .dat . Very convoluted and probably inefficient, but it works.
@@ -61,7 +64,8 @@ specs$wl<- wl
 
 #we can now turn this into a pavo file and do our normal smoothing and processing
 rspecdata<- as.rspec(specs)
-
+spect<- rspecdata %>% select(contains("pastel"))
+plot(spect)
 #explore the data by plotting all measurements
 plot(rspecdata)
 
@@ -129,7 +133,7 @@ Cosobj$Angle<- angle
 #This section is for plotting several measurements at the same time
 #First we reset our plotting environment and then create an empty space to plot in
 dev.off()
-plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.2),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 800 nm)", main = "Raw",bty= "l",las=1,pch=19)
+plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 0.5),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 800 nm)", main = "R_asiaticus",bty= "l",las=1,pch=19)
 #add points and line
 #change y variable to change the plotted line, keep x (pdat$Angle)
 #default y values are column numbers, column names would also work, but is not automated
@@ -138,10 +142,18 @@ lines(pdat$Angle, pdat[,2], pch = 19, col = "blue", type = "b", lty = 1,lwd=2)
 lines(pdat$Angle, pdat[,3], pch = 19, col = "darkblue", type = "b", lty = 1,lwd=2)
 lines(pdat$Angle, pdat[,4], pch = 19, col = "green", type = "b", lty = 1,lwd=2)
 lines(pdat$Angle, pdat[,5], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,6], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,7], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,8], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,9], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,10], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,11], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,12], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
+lines(pdat$Angle, pdat[,13], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
 
 #Now we add a nice cosine
 #Change the number before cos(Rangle) to change the maximum of the cosine line.
-cosine<- 1*cos(Rangle) 
+cosine<- 0.2*cos(Rangle) 
 Cosobj<-as.data.frame(cosine)
 Cosobj$Angle<- angle
 lines(Cosobj$Angle, Cosobj$cosine, pch = 19, col = "black", type = "b", lty = 1)
