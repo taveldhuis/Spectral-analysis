@@ -14,3 +14,7 @@ Code and data for analysis of spectral (TRM8, ABS8) data
 #Colourspace modelling and plotting (triangle)
 #Author- Tom Veldhuis (t.a.veldhuis@rug.nl)
 #An R script that processes spectral data (preferably from excel) into a triagular colourspace model
+
+#ARM Heatmap script
+#Author- Tom Veldhuis/Casper van der Kooi (t.a.veldhuis@rug.nl)
+#An R script that plots ARM data into a heatmap to show reflectance at all angle and illumination combinations. Advanced version of "Atomated ARM processing and plotting"
