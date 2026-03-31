@@ -10,21 +10,24 @@ library(data.table)
 library(ggfx)
 
 #set your working directory. Make sure there are ONLY .dat files from the ARM in the directory
-setwd("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Ophyrs 2025/ARM/20250224")
+setwd("C:/Users/P309883/OneDrive - University of Groningen/Downloads/20260330/20260330")
 
 #here we set the variables determined by the ARM measurement protocol. The variables should match those specified in the Matlab script
-anglim<- 60
+anglim<- 70
 dstep<-10
+
+#Set polarisation as set in matlab (NP,TE,TM)
+pol<- "NP"
 #In your directory, which measurement folder do you want to analyze?
-Sample<- "O_eos_1"
+Sample<- "Rasiaticus_2_along"
 #What wl range are you using originally?
-wl<- c(300:1000)
+wl<- c(200:1100)
 #Set illumination angle for later plotting
 Illum="0"
 #set the wavelength at which you want to plot your angles
-lambda<- 800
+lambda<- 500
 # Manually define the range for reflectance values
-manual_reflectance_max <- 1  # Set the maximum value for the color scale (outliers above this will be red)
+manual_reflectance_max <- 0.3  # Set the maximum value for the color scale (outliers above this will be red)
 #Snap 0.12 @ 411nm, Racris 1.05, Anthulight 0.7, glossy 5002 0.8, glossy 1021b 1.15, 
 
 # cex-like parameter for scaling all text in plots
@@ -72,8 +75,9 @@ rspecdata<- as.rspec(specs)
 #explore the data by plotting all measurements
 plot(rspecdata)
 
+pdat0<- rspecdata
 #If needed we can remove negative values using this line
-pdat0<- procspec(rspecdata, fixneg = "addmin") 
+#pdat0<- procspec(pdat0, fixneg = "addmin") 
 
 #select the specific wavelength we want to plot, and transform the data so that we can compare measurement angle and reflectance
 test<- pdat0 %>% filter(wl==lambda)
@@ -87,7 +91,7 @@ long2$M_angle<- NULL
 
 long2<- long2 %>% filter(Group == Sample)
 
-long2$Illumination_Angle <- sub("TE.*", "", rownames(long2))
+long2$Illumination_Angle <- sub(paste0(pol, ".*"), "", rownames(long2))
 long2$Illumination_Angle <- sub(".*Illumangle", "", long2$Illumination_Angle)
 long2$Group<-NULL
 long2$Illumination_Angle<- as.numeric(long2$Illumination_Angle)
@@ -164,11 +168,12 @@ smoothed_plot <- ggplot(interp_df_capped, aes(x = Illumination_Angle, y = Observ
     panel.border = element_blank()                # Remove border
   ) +
   labs(x = "Illumination Angle (°)", y = "Observation Angle (°)", fill = "Reflectance") +
-  coord_fixed()
+  coord_fixed() +
+  ggtitle(paste(Sample,lambda,"nm"))
 
 # Display the smoothed heatmap
 smoothed_plot
 
 # Save the smoothed heatmap to a preferred folder
-ggsave("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Heatmaps/Testmap.pdf", smoothed_plot, width = 5, height = 5, units = "in")
+ggsave(paste0("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Heatmaps/",Sample,lambda,".pdf"), smoothed_plot, width = 5, height = 5, units = "in")
 
