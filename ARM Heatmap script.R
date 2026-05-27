@@ -10,7 +10,7 @@ library(data.table)
 library(ggfx)
 
 #set your working directory. Make sure there are ONLY .dat files from the ARM in the directory
-setwd("C:/Users/P309883/OneDrive - University of Groningen/Downloads/20260330/20260330")
+setwd("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Nieuwe analyse Ophrys/Spectra/2026-05-06/20260506/20260506")
 
 #here we set the variables determined by the ARM measurement protocol. The variables should match those specified in the Matlab script
 anglim<- 70
@@ -19,15 +19,15 @@ dstep<-10
 #Set polarisation as set in matlab (NP,TE,TM)
 pol<- "NP"
 #In your directory, which measurement folder do you want to analyze?
-Sample<- "Rasiaticus_2_along"
+Sample<- "O_hellenae_1"
 #What wl range are you using originally?
-wl<- c(200:1100)
+wl<- c(300:1200)
 #Set illumination angle for later plotting
 Illum="0"
 #set the wavelength at which you want to plot your angles
-lambda<- 500
+lambda<- 450
 # Manually define the range for reflectance values
-manual_reflectance_max <- 0.3  # Set the maximum value for the color scale (outliers above this will be red)
+manual_reflectance_max <- 0.06  # Set the maximum value for the color scale (outliers above this will be red)
 #Snap 0.12 @ 411nm, Racris 1.05, Anthulight 0.7, glossy 5002 0.8, glossy 1021b 1.15, 
 
 # cex-like parameter for scaling all text in plots
@@ -66,7 +66,7 @@ allnames<- c(allnames,cnames)
 colnames(dataset)<- allnames
 
 #remove all the wl columns that are duplicate and add one new one
-specs<- dataset %>% select(!contains("wl"))
+specs<- dataset %>% dplyr::select(!contains("wl"))
 specs$wl<- wl
 
 #we can now turn this into a pavo file and do our normal smoothing and processing
@@ -77,7 +77,7 @@ plot(rspecdata)
 
 pdat0<- rspecdata
 #If needed we can remove negative values using this line
-#pdat0<- procspec(pdat0, fixneg = "addmin") 
+pdat0<- procspec(pdat0, fixneg = "addmin") 
 
 #select the specific wavelength we want to plot, and transform the data so that we can compare measurement angle and reflectance
 test<- pdat0 %>% filter(wl==lambda)
@@ -86,10 +86,10 @@ long2<- as.data.frame(long)
 colnames(long2)<- c("Reflectance")
 long2$M_angle<- c(rownames(long2))
 long2$Observation_Angle<- gsub(".*_","",long2$M_angle)
-long2$Group<- sub("\\/.*", "", long2$M_angle)
+long2$Group <- sub("^([^/]+/[^/]+).*", "\\1", long2$M_angle)
 long2$M_angle<- NULL
 
-long2<- long2 %>% filter(Group == Sample)
+long2<- long2 %>% filter(Group == "20260506/O_hellenae_1")
 
 long2$Illumination_Angle <- sub(paste0(pol, ".*"), "", rownames(long2))
 long2$Illumination_Angle <- sub(".*Illumangle", "", long2$Illumination_Angle)
@@ -134,8 +134,11 @@ adjust_reflectance_limits <- function(data, quantile_trim = NULL) {
 
 
 # Cap the reflectance values only for plotting purposes
+manual_reflectance_max <- 0.2  # Set the maximum value for the color scale (outliers above this will be red)
+
 interp_df_capped <- interp_df %>%
   mutate(Reflectance_Capped = pmin(Reflectance, manual_reflectance_max))
+
 
 # Create the smoothed heatmap
 smoothed_plot <- ggplot(interp_df_capped, aes(x = Illumination_Angle, y = Observation_Angle, fill = Reflectance_Capped)) +
