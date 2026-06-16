@@ -20,11 +20,11 @@ setwd("C:/YOUR LOCATION/YOUR SUBFOLDER/ETC")
 #Load your data file
 data<- read.csv("Processed spectral data.csv", sep=";") 
 
-#Here, we specify some parameters of the model. Most importantly, What we are observing and what visual system we are using?
+#Here, we specify some parameters of the model. Most importantly, what we are observing and what visual system we are using?
 
 #What data are we observing? Can be anything, a species or a group name
 Species<- "Speculum"
-#What type of measurement are we processing? If like me you work with different setups, you may have a lot of different spectra in your file that you dont want to use here. Using the next line, we specify that we only want to process measurement that feater "probe" in the column name
+#What type of measurement are we processing? If like me you work with different setups, you may have a lot of different spectra in your file that you dont want to use here. Using the next line, we specify that we only want to process measurement that feature "probe" in the column name
 Method<- "probe"
 
 #What is the name of the pollinator system you are using
@@ -53,7 +53,7 @@ plot(specdat)
 tdat<- specdat %>% filter(wl <(wlmax+1))
 tdat<- tdat %>% filter(wl >(wlmin-1))
 
-#Lets remove any negative values, as we cant have negatave photon counts. If your own script already did this nothing will happen
+#Lets remove any negative values, as we cant have negative photon counts. If your own script already did this nothing will happen
 tdat<- procspec(tdat, fixneg = "addmin") 
 #again overwrite the wl to make sure its right
 tdat$wl<- c(wlmin:wlmax)
@@ -61,7 +61,7 @@ tdat$wl<- c(wlmin:wlmax)
 #Lets make our testframe, which we will use to feed data into the model
 #We multiply be 100 because the model doesnt like being in a 0-1 range
 testframe<- tdat*100
-#since we also multiplied the wl column we need to specify it again. I could make it so that the wl column is ignored but since it might not always be in the same place that just invites trouble.
+#Since we also multiplied the wl column we need to specify it again. I could make it so that the wl column is ignored but since it might not always be in the same place that just invites trouble.
 testframe$wl<- wl
 
 #Now we get to do the fun stuff: actual modelling
@@ -69,7 +69,7 @@ testframe$wl<- wl
 r<- sensmodel(Visual,range=c(300,700))
 
 #Now we combine our data and visual system into the model.
-#Explanaition of parameters:
+#Explanation of parameters:
 #data- Our dataframe, which we called tesframe before
 #visual- our visual system, which we called r before
 #vonkries- a transformation using the von Kries colour correction. Not applicable to some models, ask Casper. Or maybe I finally know how it works by the time someone uses this. 
@@ -90,7 +90,7 @@ tri.flowers <- colspace(vis.flower, space = 'tri')
 #Lets have a look
 head(tri.flowers)
 
-#Now we plot our colourspace Lots of parameters here are just graphical. For publications I reccomend plotting this yourself, as pavo is not great for modifying plot parameters beyond this
+#Now we plot our colourspace Lots of parameters here are just graphical. For publications I recommend plotting this yourself, as pavo is not great for modifying plot parameters beyond this
 #bg- what colours are the points in the plot? spec2rgb makes them look like what they look like to us.
 triplot(tri.flowers, pch = 22, cex= 1.4, bg = spec2rgb(testframe))
 
