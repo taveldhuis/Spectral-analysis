@@ -10,24 +10,25 @@ library(data.table)
 library(ggfx)
 
 #set your working directory. Make sure there are ONLY .dat files from the ARM in the directory
-setwd("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Nieuwe analyse Ophrys/Spectra/2026-05-06/20260506/20260506")
+setwd("C:/Users/P309883/OneDrive - University of Groningen/Downloads/Arjan data")
 
 #here we set the variables determined by the ARM measurement protocol. The variables should match those specified in the Matlab script
 anglim<- 70
 dstep<-10
 
+# Cap the reflectance values only for plotting purposes
+manual_reflectance_max <- 1  # Set the maximum value for the color scale (outliers above this will be red)
+
 #Set polarisation as set in matlab (NP,TE,TM)
 pol<- "NP"
 #In your directory, which measurement folder do you want to analyze?
-Sample<- "O_hellenae_1"
+Sample<- "Arjan_black_stimulus_matte1"
 #What wl range are you using originally?
 wl<- c(300:1200)
 #Set illumination angle for later plotting
 Illum="0"
 #set the wavelength at which you want to plot your angles
-lambda<- 450
-# Manually define the range for reflectance values
-manual_reflectance_max <- 0.06  # Set the maximum value for the color scale (outliers above this will be red)
+lambda<- 800
 #Snap 0.12 @ 411nm, Racris 1.05, Anthulight 0.7, glossy 5002 0.8, glossy 1021b 1.15, 
 
 # cex-like parameter for scaling all text in plots
@@ -89,14 +90,14 @@ long2$Observation_Angle<- gsub(".*_","",long2$M_angle)
 long2$Group <- sub("^([^/]+/[^/]+).*", "\\1", long2$M_angle)
 long2$M_angle<- NULL
 
-long2<- long2 %>% filter(Group == "20260506/O_hellenae_1")
 
 long2$Illumination_Angle <- sub(paste0(pol, ".*"), "", rownames(long2))
 long2$Illumination_Angle <- sub(".*Illumangle", "", long2$Illumination_Angle)
+long2<- long2 %>% filter(str_detect(Group, Sample))
 long2$Group<-NULL
 long2$Illumination_Angle<- as.numeric(long2$Illumination_Angle)
 long2$Observation_Angle<- as.numeric(long2$Observation_Angle)
-
+long2<- long2[-1,]
 
 # Interpolation: Create a dense grid
 interp_data <- with(long2, akima::interp(
@@ -133,8 +134,6 @@ adjust_reflectance_limits <- function(data, quantile_trim = NULL) {
 }
 
 
-# Cap the reflectance values only for plotting purposes
-manual_reflectance_max <- 0.2  # Set the maximum value for the color scale (outliers above this will be red)
 
 interp_df_capped <- interp_df %>%
   mutate(Reflectance_Capped = pmin(Reflectance, manual_reflectance_max))
@@ -178,5 +177,5 @@ smoothed_plot <- ggplot(interp_df_capped, aes(x = Illumination_Angle, y = Observ
 smoothed_plot
 
 # Save the smoothed heatmap to a preferred folder
-ggsave(paste0("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Heatmaps/",Sample,lambda,".pdf"), smoothed_plot, width = 5, height = 5, units = "in")
+ggsave(paste0("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Heatmaps/",Sample,"_",lambda,"nm",".pdf"), smoothed_plot, width = 5, height = 5, units = "in")
 
