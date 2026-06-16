@@ -10,18 +10,18 @@ library(data.table)
 
 
 #set your working directory. Make sure there are ONLY .dat files from the ARM in the directory
-setwd("C:/Users/P309883/OneDrive - University of Groningen/Downloads/Data-20260325T132816Z-3-001/Data/20250223")
+setwd("C:/Users/P309883/OneDrive - University of Groningen/Desktop/Nieuwe analyse Ophrys/Spectra/2026-05-06/20260506/20260506")
 
 #here we set the variables determined by the ARM measurement protocol. The variables should match those specified in the Matlab script
 anglim<- 70
 dstep<-10
 #Set the name you want to appear in your plots
 Species<- "Various"
-wl<- c(200:1100)
+wl<- c(300:1200)
 #Set illumination angle for later plotting
 Illum="0"
 #set the wavelength at which you want to plot your angles
-plotwl<- 500
+plotwl<- 800
 
 #Spectra loading and mallnames#Spectra loading and manipulation. Collapse this part to skip to the next section
 #####
@@ -59,13 +59,14 @@ allnames<- c(allnames,cnames)
 colnames(dataset)<- allnames
 
 #remove all the wl columns that are duplicate and add one new one
-specs<- dataset %>% select(!contains("wl"))
+specs<- dataset %>% dplyr::select(!contains("wl"))
 specs$wl<- wl
 
 #we can now turn this into a pavo file and do our normal smoothing and processing
 rspecdata<- as.rspec(specs)
-spect<- rspecdata %>% select(contains("pastel"))
-plot(spect)
+#spect<- rspecdata %>% dplyr::select(contains("lab1"))
+#plot(spect)
+#rspecdata<- spect
 #explore the data by plotting all measurements
 plot(rspecdata)
 
@@ -98,7 +99,7 @@ pdat0<- procspec(smoothspec, fixneg = "addmin")
 #pdat0<- read.csv("ARM Casper 17-10-2024/Anthuriumlight 800nm ARM data.csv",header=T,sep=";")
 
 #This selects data with the right illumination angle 
-pdatR<- pdat0 %>% select(contains(paste("angle",Illum,sep="")))
+pdatR<- pdat0 %>% dplyr::select(contains(paste("angle",Illum,sep="")))
 
 #sometimes column names are read wrong when loaded from excel, where - is replaced with .
 #These two lines switch them back
@@ -133,7 +134,7 @@ Cosobj$Angle<- angle
 #This section is for plotting several measurements at the same time
 #First we reset our plotting environment and then create an empty space to plot in
 dev.off()
-plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 0.5),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 800 nm)", main = "R_asiaticus",bty= "l",las=1,pch=19)
+plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 500 nm)", main = "O. helleanae",bty= "l",las=1,pch=19)
 #add points and line
 #change y variable to change the plotted line, keep x (pdat$Angle)
 #default y values are column numbers, column names would also work, but is not automated
@@ -153,7 +154,7 @@ lines(pdat$Angle, pdat[,13], pch = 19, col = "darkgreen", type = "b", lty = 1,lw
 
 #Now we add a nice cosine
 #Change the number before cos(Rangle) to change the maximum of the cosine line.
-cosine<- 0.2*cos(Rangle) 
+cosine<- 0.09*cos(Rangle) 
 Cosobj<-as.data.frame(cosine)
 Cosobj$Angle<- angle
 lines(Cosobj$Angle, Cosobj$cosine, pch = 19, col = "black", type = "b", lty = 1)
@@ -164,14 +165,14 @@ axis(1, at = seq(-70, 100, by = 10), las=1)
 
 #This next section is for normalizing your spectra to 1. You may not need it. Remember to change the names to those in your own Npdat object
 Npdat<- pdat
-Npdat$reflectance.O_eos_1<- (Npdat$reflectance.O_eos_1/(max(Npdat$reflectance.O_eos_1)))
-Npdat$reflectance.O_eos_1_b<- (Npdat$reflectance.O_eos_1_b/(max(Npdat$reflectance.O_eos_1_b)))
-Npdat$reflectance.O_eos_2<- (Npdat$reflectance.O_eos_2/(max(Npdat$reflectance.O_eos_2)))
-Npdat$reflectance.O_eos_2_b<- (Npdat$reflectance.O_eos_2_b/(max(Npdat$reflectance.O_eos_2_b)))
+Npdat[,2]<- (Npdat[,2]/(max(Npdat[,2])))
+Npdat[,3]<- (Npdat[,3]/(max(Npdat[,3])))
+Npdat[,4]<- (Npdat[,4]/(max(Npdat[,4])))
+Npdat[,5]<- (Npdat[,5]/(max(Npdat[,5])))
 
 #This section is for plotting several normalized measurements at the same time
 #First we create an empty space to plot in
-plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.2),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 800 nm)", main = "Normalised",bty= "l",las=1,pch=19)
+plot(x=long2$Angle, y=long2$reflectance, ylim = c(0, 1.2),col=factor(long2$Group), type = "n", xlab = "Measurement Angle", ylab = "Reflectance (at 500 nm)", main = "Normalised omegaifera reflectance",bty= "l",las=1,pch=19)
 
 #add points and line
 #change y variable to change the plotted line, keep x (pdat$Angle)
@@ -183,7 +184,7 @@ lines(Npdat$Angle, Npdat[,4], pch = 19, col = "green", type = "b", lty = 1,lwd=2
 lines(Npdat$Angle, Npdat[,5], pch = 19, col = "darkgreen", type = "b", lty = 1,lwd=2)
 
 #we add the cosine line
-cosine<- 1*cos(Rangle) 
+cosine<- 0.1*cos(Rangle) 
 Cosobj<-as.data.frame(cosine)
 Cosobj$Angle<- angle
 lines(Cosobj$Angle, Cosobj$cosine, pch = 19, col = "black", type = "b", lty = 1)
